@@ -1,11 +1,64 @@
 import './App.css';
+import axios from 'axios';
+
+const cocoAddr = "0x538C26A2f0468b05a724252b300e3e223227ce63"
+const contractAddr = "0x174d09887b5e7870768743b8fa1eaa95c95988a1"
+const globalFeePayer = "0x02B57F90DC5eBf90fDf3A00797b95CA05BB04850"
+const userFeePayer = "0xe59D6Be9DeE69d2ea721B0Ef5dD26f24BAdd5273"
+const amount = '500000000000'
+const decimal = 0
 
 function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <button onClick={()=>{
+        <button onClick={ async ()=>{
+          const accounts = await window.klaytn.enable();
+          const account = window.klaytn.selectedAddress;
+          const balance = await window.caver.klay.getBalance(account);
+          const instanceFPTT = new window.caver.klay.KIP7(contractAddr)
+          const tokenname = await instanceFPTT.name()
+          const tokenBalance = await instanceFPTT.balanceOf(account)
+          const isMinter = await instanceFPTT.isMinter(account)
+          const allowance = await instanceFPTT.allowance(account,globalFeePayer)
+          const data = window.caver.klay.abi.encodeFunctionCall(
+            {
+              constant: false,
+              inputs: [{ internalType: 'address', name: 'to', type: 'address' }, { internalType: 'uint256', name: 'value', type: 'uint256' }],
+              name: 'transfer',
+              outputs: [{ internalType: 'bool', name: '', type: 'bool' }],
+              payable: false,
+              stateMutability: 'nonpayable',
+              type: 'function',
+            },
+            [
+              cocoAddr,
+              window.caver.utils
+                .toBN(amount)
+                .mul(window.caver.utils.toBN(Number(`1e${decimal}`)))
+                .toString()
+            ]
+          )
+          const signedTransaction = await window.caver.klay.signTransaction({
+            type: 'FEE_DELEGATED_SMART_CONTRACT_EXECUTION',
+            from: account,
+            to: contractAddr,
+            data,
+            gas: '300000'
+          })
+          // console.log(signedTransaction)
+
+          const senderRawTransaction = signedTransaction.rawTransaction
           
+          axios.post('http://localhost:4000/users/', {
+            senderRawTransaction: senderRawTransaction,
+          })
+          // .then(function (response) {
+          //   console.log(response);
+          // })
+          // .catch(function (error) {
+          //   console.log(error);
+          // });
         }}>토큰전송</button>
       </header>
     </div>
