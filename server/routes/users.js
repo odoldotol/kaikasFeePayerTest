@@ -6,9 +6,8 @@ router.post('/', async function(req, res, next) {
 
   try {
     const CHAINID='1001'
-    const ACCESSKEYID='KASKOEA3ED898LWHQDI9CYI9'
-    const SECRET_ACCESSKEY='H2CmaUQ00NDItNwXLFixXE2GlHd5eEOI_6EccVKn'
-    const AUTHORIZATION='Basic S0FTS09FQTNFRDg5OExXSFFESTlDWUk5OkgyQ21hVVEwME5ESXROd1hMRml4WEUyR2xIZDVlRU9JXzZFY2NWS24='
+    const ACCESSKEYID=''
+    const SECRET_ACCESSKEY=''
 
     const feePayer = "0xe59D6Be9DeE69d2ea721B0Ef5dD26f24BAdd5273"
 
@@ -32,12 +31,16 @@ router.post('/', async function(req, res, next) {
     // console.log("rawTx: "+rawTx)
 
     const result = await caver.rpc.klay.sendRawTransaction(rawTx)
-      .then(()=>{
-        res.send(result)
+      .once('receipt', async (receipt) => {
+        console.log(receipt)
+        return receipt
       })
-      .catch(err=>{
-        res.send(err)
+      .once('error', (error) => {
+        console.log(error)
+        return error
       })
+
+    res.send(result)
 
 
 
