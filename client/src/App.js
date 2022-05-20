@@ -29,7 +29,8 @@ function App() {
         
         <button onClick={ async ()=>{
           const accounts = await window.klaytn.enable();
-          const account = await window.klaytn.selectedAddress;
+          // const account = await window.klaytn.selectedAddress;
+          const account = accounts[0]
           // const balance = await window.caver.klay.getBalance(account);
           const instanceFPTT = new window.caver.klay.KIP7(contractAddr)
           // const tokenname = await instanceFPTT.name()
@@ -54,6 +55,9 @@ function App() {
                 .toString()
             ]
           )
+
+          // console.log(data)
+
           const signedTransaction = await window.caver.klay.signTransaction({
             type: 'FEE_DELEGATED_SMART_CONTRACT_EXECUTION',
             from: account,
@@ -68,12 +72,12 @@ function App() {
           axios.post('http://localhost:4000/users/', {
             senderRawTransaction: senderRawTransaction,
           })
-          // .then(function (response) {
-          //   console.log(response);
-          // })
-          // .catch(function (error) {
-          //   console.log(error);
-          // });
+          .then(function (response) {
+            console.log(response);
+          })
+          .catch(function (error) {
+            console.log(error);
+          });
         }}>토큰전송</button>
       </header>
     </div>

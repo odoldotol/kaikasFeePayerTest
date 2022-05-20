@@ -6,8 +6,8 @@ router.post('/', async function(req, res, next) {
 
   try {
     const CHAINID='1001'
-    const ACCESSKEYID=''
-    const SECRET_ACCESSKEY=''
+    const ACCESSKEYID='KASK2LA55N028G74BXGWHD4T'
+    const SECRET_ACCESSKEY='fYTDD988PQFNpPb9uZHQgPuRoUALhvyWAP-8ZUgw'
 
     const feePayer = "0xe59D6Be9DeE69d2ea721B0Ef5dD26f24BAdd5273"
 
@@ -31,15 +31,15 @@ router.post('/', async function(req, res, next) {
     // console.log("rawTx: "+rawTx)
 
     const result = await caver.rpc.klay.sendRawTransaction(rawTx)
-      .once('receipt', async (receipt) => {
-        console.log(receipt)
-        return receipt
-      })
-      .once('error', (error) => {
-        console.log(error)
-        return error
-      })
-
+      // .once('receipt', async (receipt) => {
+      //   console.log(receipt)
+      //   return receipt
+      // })
+      // .once('error', (error) => {
+      //   console.log(error)
+      //   return error
+      // })
+    console.log(result)
     res.send(result)
 
 
@@ -117,6 +117,12 @@ router.post('/', async function(req, res, next) {
     //     .catch(err => {
     //         console.log(err)
     //     })
+
+
+    // 서버에서 트렌젝션 데이터 만들려면
+    // const kip7 = caver.kct.kip7.create('0x174d09887b5e7870768743b8fa1eaa95c95988a1')
+    // const result = kip7.methods.transfer('0x538C26A2f0468b05a724252b300e3e223227ce63', '500000000000').encodeABI()
+
 
     // console.log(result)
     // res.send(result)
