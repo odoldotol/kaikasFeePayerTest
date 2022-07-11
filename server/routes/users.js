@@ -6,8 +6,8 @@ router.post('/', async function(req, res, next) {
 
   try {
     const CHAINID='1001'
-    const ACCESSKEYID='KASK2LA55N028G74BXGWHD4T'
-    const SECRET_ACCESSKEY='fYTDD988PQFNpPb9uZHQgPuRoUALhvyWAP-8ZUgw'
+    const ACCESSKEYID=''
+    const SECRET_ACCESSKEY=''
 
     const feePayer = "0xe59D6Be9DeE69d2ea721B0Ef5dD26f24BAdd5273"
 
@@ -19,13 +19,24 @@ router.post('/', async function(req, res, next) {
     // console.log("senderRawTransaction: "+senderRawTransaction)
 
     const contractInstance = await caver.transaction.feeDelegatedSmartContractExecution.decode(senderRawTransaction)
-    // console.log("contractInstance: ")
-    // console.dir(contractInstance)
+    console.log("contractInstance: ")
+    console.dir(contractInstance)
+    const decodedInput = await caver.abi.decodeFunctionCall({
+      constant: false,
+      inputs: [{ internalType: 'address', name: 'to', type: 'address' }, { internalType: 'uint256', name: 'value', type: 'uint256' }],
+      name: 'transfer',
+      outputs: [{ internalType: 'bool', name: '', type: 'bool' }],
+      payable: false,
+      stateMutability: 'nonpayable',
+      type: 'function',
+    }, contractInstance._input)
+    console.log("decodedInput: ")
+    console.dir(decodedInput)
 
     const signedTransaction = await caver.wallet.signAsFeePayer(feePayer, contractInstance)
     // const signedTransaction = await caver.wallet.signAsGlobalFeePayer(contractInstance)
-    // console.log("signedTransaction: ")
-    // console.dir(signedTransaction)
+    console.log("signedTransaction: ")
+    console.log(signedTransaction)
 
     const rawTx = signedTransaction.getRLPEncoding()
     // console.log("rawTx: "+rawTx)

@@ -56,7 +56,7 @@ function App() {
             ]
           )
 
-          // console.log(data)
+          console.log(data)
 
           const signedTransaction = await window.caver.klay.signTransaction({
             type: 'FEE_DELEGATED_SMART_CONTRACT_EXECUTION',
